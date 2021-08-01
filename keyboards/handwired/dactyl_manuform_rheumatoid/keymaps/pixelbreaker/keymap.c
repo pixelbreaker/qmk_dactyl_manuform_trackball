@@ -206,7 +206,8 @@ void pointing_device_init(void){
 	// if(!is_keyboard_master())
 	// 	return;
 
-	pmw_init();
+	pmw_spi_init();
+    pmw_set_cpi(8000);
 }
 
 int max(int num1, int num2) { return (num1 > num2 ) ? num1 : num2; }
@@ -304,14 +305,14 @@ void handle_pointing_device_modes(void){
 void get_sensor_data(void) {
 	if(!is_keyboard_master())
 		return;
-	report_pmw_t pmw_report = pmw_get_report();
+	report_pmw_t pmw_report = pmw_read_burst();
 
 	if (integration_mode) {
-		sensor_x += pmw_report.x;
-		sensor_y += pmw_report.y;
+		sensor_x += pmw_report.dx;
+		sensor_y += pmw_report.dy;
 	} else {
-		sensor_x = pmw_report.x;
-		sensor_y = pmw_report.y;
+		sensor_x = pmw_report.dx;
+		sensor_y = pmw_report.dy;
 	}
 }
 

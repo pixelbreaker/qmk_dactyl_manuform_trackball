@@ -45,6 +45,6 @@ SPLIT_KEYBOARD = yes
 # Add trackball support
 POINTING_DEVICE_ENABLE = yes
 
-# QUANTUM_LIB_SRC += spi_master.c
+QUANTUM_LIB_SRC += spi_master.c
 
-SRC += pmw3360/pmw3360.c
+SRC += pmwPloppy/pmw3360.c

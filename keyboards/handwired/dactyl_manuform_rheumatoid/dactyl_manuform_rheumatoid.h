@@ -18,7 +18,7 @@
 
 #include "quantum.h"
 #include "pointing_device.h"
-#include "./pmw3360/pmw3360.h"
+#include "./pmwPloppy/pmw3360.h"
 
 /* This is a shortcut to help you visually see your layout.
  *
