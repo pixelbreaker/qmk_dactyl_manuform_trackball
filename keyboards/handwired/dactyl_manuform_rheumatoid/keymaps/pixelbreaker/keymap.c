@@ -292,7 +292,7 @@ void handle_pointing_device_modes(void){
 		cur_factor = cursor_multiplier;
 		mouse_report.x = CLAMP_HID( sensor_x * cur_factor / 100);
 		mouse_report.y = CLAMP_HID(-sensor_y * cur_factor / 100);
-        xprintf("x: %d y: %d\n", mouse_report.x, mouse_report.y);
+        // xprintf("x: %d y: %d\n", mouse_report.x, mouse_report.y);
 	} else {
 		// accumulate movement until threshold reached
 		cum_x += sensor_x;
@@ -302,16 +302,16 @@ void handle_pointing_device_modes(void){
 			tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
 
 		} else if(track_mode == scroll_mode) {
-				cur_factor = scroll_threshold;
-				if(abs(cum_x) + abs(cum_y) >= cur_factor * 6) {
-					if(abs(cum_x) * 0.8 > abs(cum_y)) {
-						mouse_report.h = sign(cum_x) * (abs(cum_x) + abs(cum_y)) / (cur_factor * 4);
-					} else {
-						mouse_report.v = sign(cum_y) * (abs(cum_x) + abs(cum_y)) / (cur_factor * 4);
-					}
-					cum_x = 0;
-					cum_y = 0;
-				}
+            cur_factor = scroll_threshold;
+            // if(abs(cum_x) + abs(cum_y) >= cur_factor * 6) {
+                if(abs(sensor_x) * 0.8 > abs(sensor_y)) {
+                    mouse_report.h = CLAMP_HID(sign(sensor_x) * (abs(sensor_x) + abs(sensor_y)) / 0.2);
+                } else {
+                    mouse_report.v = CLAMP_HID(sign(sensor_y) * (abs(sensor_x) + abs(sensor_y)) / 0.2);
+                }
+                cum_x = 0;
+                cum_y = 0;
+            // }
 		}
 	}
 	pointing_device_set_report(mouse_report);
