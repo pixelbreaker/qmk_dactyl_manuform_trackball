@@ -22,7 +22,7 @@ BOOTLOADER = caterina # right
 BOOTMAGIC_ENABLE = no       # Virtual DIP switch configuration
 MOUSEKEY_ENABLE = no       # Mouse keys
 EXTRAKEY_ENABLE = yes       # Audio control and System control
-CONSOLE_ENABLE = yes        # Console for debug
+CONSOLE_ENABLE = no        # Console for debug
 COMMAND_ENABLE = no        # Commands for debug and configuration
 # Do not enable SLEEP_LED_ENABLE. it uses the same timer as BACKLIGHT_ENABLE
 SLEEP_LED_ENABLE = no       # Breathing sleep LED during USB suspend
@@ -47,4 +47,4 @@ POINTING_DEVICE_ENABLE = yes
 
 QUANTUM_LIB_SRC += spi_master.c
 
-SRC += pmwPloppy/pmw3360.c
+SRC += pmw3360.c

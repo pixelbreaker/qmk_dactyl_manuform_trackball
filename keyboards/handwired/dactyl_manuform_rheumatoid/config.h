@@ -56,9 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DIODE_DIRECTION COL2ROW
 
 #define USB_POLLING_INTERVAL_MS 1
-#define USB_MAX_POWER_CONSUMPTION 100
-#define SPI_SS_PIN F7
-#define ROTATIONAL_TRANSFORM_ANGLE 20
+// #define USB_MAX_POWER_CONSUMPTION 100
+
+#define SS_PIN F7
+#define PMW_CPI 600
+#define ROTATIONAL_TRANSFORM_ANGLE -0x30
 
 /*
  * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.

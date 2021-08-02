@@ -38,7 +38,7 @@ void print_byte(uint8_t byte) { dprintf("%c%c%c%c%c%c%c%c|", (byte & 0x80 ? '1' 
 
 
 bool spi_start_adv(void) {
-    bool status = spi_start(SPI_SS_PIN, false, 3, SPI_DIVISOR);
+    bool status = spi_start(F7, false, 3, SPI_DIVISOR);
     wait_us(1);
     return status;
 }

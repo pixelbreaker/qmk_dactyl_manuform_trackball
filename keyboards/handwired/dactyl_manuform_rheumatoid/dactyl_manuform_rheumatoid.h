@@ -16,9 +16,9 @@
 
 #pragma once
 
-#include "quantum.h"
+#include "analog.h"
 #include "pointing_device.h"
-#include "./pmwPloppy/pmw3360.h"
+#include "pmw3360.h"
 
 /* This is a shortcut to help you visually see your layout.
  *

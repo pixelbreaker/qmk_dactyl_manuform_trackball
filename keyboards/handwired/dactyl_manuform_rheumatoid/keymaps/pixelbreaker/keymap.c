@@ -26,6 +26,8 @@
 #define _SYMBOL 3
 #define _GAMING 4
 #define _ADJUST 5
+#define _MOUSE 6
+#define _NAV 7
 
 
 enum custom_keycodes {
@@ -39,7 +41,7 @@ enum custom_keycodes {
     SYMBOL,
     GAMING,
     MACSLEEP,
-    ENC_PLAY,
+    ENC_PLAY
 };
 
 // Gaming
@@ -47,6 +49,11 @@ enum custom_keycodes {
 #define STATS MEH(KC_8)
 #define RAISE MO(_RAISE)
 #define LOWER MO(_LOWER)
+
+#define LINE_DOWN LALT(KC_DOWN)
+#define LINE_UP LALT(KC_UP)
+#define WORD_LEFT LALT(KC_LEFT)
+#define WORD_RIGHT LALT(KC_RIGHT)
 
 // #define SYMBOL LT(_SYMBOL,KC_ESC)
 
@@ -59,23 +66,21 @@ uint8_t track_mode = 0; // 0 Mousecursor; 1 arrowkeys/carret; 2 scrollwheel; 3 s
 #define carret_mode 1
 #define scroll_mode 2
 uint8_t prev_track_mode = 0;
-bool integration_mode = false;
 int16_t cum_x = 0;
 int16_t cum_y = 0;
 int16_t sensor_x = 0;
 int16_t sensor_y = 0;
 
 // Thresholds help to move only horizontal or vertical. When accumulated distance reaches threshold, only move one discrete value in direction with bigger delta.
-uint8_t	carret_threshold = 24;		 // higher means slower
+uint8_t	carret_threshold = 60;		 // higher means slower
 uint16_t carret_threshold_inte = 340; // in integration mode higher threshold
 
 #define regular_smoothscroll_factor 8
 bool smooth_scroll = true;
-uint8_t	scroll_threshold = 200 / regular_smoothscroll_factor;	// divide if started smooth
-uint16_t scroll_threshold_inte = 1000 / regular_smoothscroll_factor;
+uint8_t	scroll_threshold = 40 / regular_smoothscroll_factor;	// divide if started smooth
 
-uint16_t cursor_multiplier = 250;	// adjust cursor speed
-uint16_t cursor_multiplier_inte = 20;
+#define cursor_multiplier_default 140;
+uint16_t cursor_multiplier = cursor_multiplier_default;	// adjust cursor speed
 #define CPI_STEP 20
 
 int16_t cur_factor;
@@ -86,7 +91,6 @@ int16_t cur_factor;
 
 void on_mouse_button(uint8_t mouse_button, bool pressed) {
 	report_mouse_t report = pointing_device_get_report();
-
 	if(pressed)
 		report.buttons |= mouse_button;
 	else
@@ -139,8 +143,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,       KC_EQL,         ENC_PLAY,   KC_Y,       KC_U,       KC_I,       KC_O,       KC_P,      KC_GRV,
 SYMBOL,     KC_A,       KC_S,       KC_D,       KC_F,       KC_G,       KC_MINS,        MO(_ADJUST),KC_H,       KC_J,       KC_K,       KC_L,       KC_SCLN,   KC_QUOT,
 KC_LSPO,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,                                   KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,   KC_RSPC,
-                        KC_ESC,     KC_LALT,    KC_LGUI,    KC_SPC,     KC_ENT,                                 KC_BSPC,    LALT(KC_3), _______,
-                                                KC_LCTL,    LOWER,      RAISE,          _______,    KC_DEL
+                        KC_ESC,     KC_LALT,    KC_LGUI,    KC_SPC,     KC_ENT,                                 MO(_NAV),    LALT(KC_3),_______,
+                                                KC_LCTL,    LOWER,      RAISE,          KC_DEL,     KC_BSPC
 ),
 
 [_LOWER] = LAYOUT_RHEUMATOID(
@@ -162,7 +166,7 @@ _______,    _______,    _______,    _______,    _______,    _______,            
 [_SYMBOL] = LAYOUT_RHEUMATOID(
 _______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    KC_EXLM,    KC_LBRC,    KC_RBRC,    KC_DLR,     KC_PERC,    KC_F11,
 _______,    _______,    _______,    _______,    _______,    _______,    _______,        KC_UNDS,    KC_PIPE,    KC_LCBR,    KC_RCBR,    KC_EQL,     KC_COLN,    KC_F12,
-_______,    _______,    _______,    _______,    _______,    _______,                                KC_AMPR,    KC_LT,      KC_GT,      KC_MINS,    KC_SLSH,    _______,
+_______,    _______,    _______,    _______,    _______,    _______,                                KC_AMPR,    KC_LT,      KC_GT,      KC_MINS,    KC_BSLS,    _______,
                         _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
                                                 _______,    _______,    _______,        _______,    _______
 ),
@@ -177,11 +181,28 @@ KC_LSFT,    _______,    _______,    _______,    _______,    _______,            
 
 [_ADJUST] = LAYOUT_RHEUMATOID(
 _______,    _______,    _______,    _______,    _______,    KC_CPI_STD, KC_CPI_UP,      _______,    _______,    _______,    _______,    _______,    _______,    _______,
-_______,    _______,    KC_SMO_SC,  _______,    _______,    _______,    KC_CPI_DOWN,    _______,    _______,    _______,    _______,    _______,    _______,    _______,
+_______,    _______,    KC_SMO_SC,  _______,    _______,    _______,    KC_CPI_DOWN,    _______,    MACSLEEP,   _______,    _______,    _______,    _______,    _______,
 _______,    _______,    _______,    _______,    _______,    GAMING,                                 _______,    _______,    _______,    _______,    _______,    _______,
                         _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
                                                 _______,    _______,    _______,        _______,    _______
-)
+),
+
+[_MOUSE] = LAYOUT_RHEUMATOID(
+_______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    _______,    _______,    _______,    _______,    _______,    _______,
+_______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    _______,    KC_BTN1,    KC_BTN2,    KC_BTN3,    _______,    _______,
+_______,    _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,    _______,    _______,    _______,
+                        _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
+                                                _______,    _______,    _______,        _______,    _______
+),
+
+[_NAV] = LAYOUT_RHEUMATOID(
+_______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    _______,    LINE_DOWN,  LINE_UP,    _______,    _______,    _______,
+_______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    _______,    _______,
+_______,    _______,    _______,    _______,    _______,    _______,                                WORD_LEFT,  _______,    _______,    WORD_RIGHT, _______,    _______,
+                        _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
+                                                _______,    _______,    _______,        _______,    _______
+),
+
 };
 
 
@@ -200,14 +221,19 @@ _______,    _______,    _______,    _______,    _______,    GAMING,             
  **************************/
 bool enc_used = false;
 bool enc_skip = false;
+bool inited = false;
 
 #ifdef IS_RIGHT
 void pointing_device_init(void){
 	// if(!is_keyboard_master())
 	// 	return;
+    if (!inited) {
+        #undef SPI_SS_PIN
+        #define SPI_SS_PIN F7
 
-	pmw_spi_init();
-    pmw_set_cpi(8000);
+        pmw_spi_init();
+        inited = true;
+    }
 }
 
 int max(int num1, int num2) { return (num1 > num2 ) ? num1 : num2; }
@@ -265,10 +291,7 @@ void handle_pointing_device_modes(void){
 	report_mouse_t mouse_report = pointing_device_get_report();
 
 	if (track_mode == cursor_mode) {
-		if (integration_mode)
-			cur_factor = cursor_multiplier_inte;
-		else
-			cur_factor = cursor_multiplier;
+		cur_factor = cursor_multiplier;
 		mouse_report.x = CLAMP_HID( sensor_x * cur_factor / 100);
 		mouse_report.y = CLAMP_HID(-sensor_y * cur_factor / 100);
 	} else {
@@ -276,18 +299,12 @@ void handle_pointing_device_modes(void){
 		cum_x += sensor_x;
 		cum_y += sensor_y;
 		if (track_mode == carret_mode) {
-			if (integration_mode)
-				cur_factor = carret_threshold_inte;
-			else
-				cur_factor = carret_threshold;
+			cur_factor = carret_threshold;
 			tap_tb(KC_RIGHT, KC_LEFT, KC_UP, KC_DOWN);
 
 		} else if(track_mode == scroll_mode) {
-				if (integration_mode)
-					cur_factor = scroll_threshold_inte;
-				else
-					cur_factor = scroll_threshold;
-				if(abs(cum_x) + abs(cum_y) >= cur_factor) {
+				cur_factor = scroll_threshold;
+				if(abs(cum_x) + abs(cum_y) >= cur_factor * 10) {
 					if(abs(cum_x) > abs(cum_y)) {
 						mouse_report.h = sign(cum_x) * (abs(cum_x) + abs(cum_y)) / cur_factor;
 					} else {
@@ -302,24 +319,46 @@ void handle_pointing_device_modes(void){
 	pointing_device_send();
 }
 
+uint16_t motion_timer;
+uint16_t motion_start = 0;
+bool reportMotion = false;
+bool inMotion = false;
+
 void get_sensor_data(void) {
 	if(!is_keyboard_master())
 		return;
-	report_pmw_t pmw_report = pmw_read_burst();
+	report_pmw_t data = pmw_read_burst();
 
-	if (integration_mode) {
-		sensor_x += pmw_report.dx;
-		sensor_y += pmw_report.dy;
-	} else {
-		sensor_x = pmw_report.dx;
-		sensor_y = pmw_report.dy;
-	}
+    if (data.isMotion) {
+        motion_timer = timer_read();
+        inMotion = true;
+        layer_on(_MOUSE);
+    } else if (inMotion && !data.isMotion && timer_elapsed(motion_timer) > 600) {
+        inMotion = false;
+        reportMotion = false;
+        motion_start = 0;
+        layer_off(_MOUSE);
+    }
+
+    // accidental touch handling... WIP
+    if (!reportMotion) {
+        if (motion_start == 0) {
+            motion_start = timer_read();
+        } else if (motion_start != 0 && timer_elapsed(motion_start) > 400) {
+            reportMotion = true;
+        }
+    }
+
+    if (reportMotion) {
+		sensor_x = -data.dx;
+		sensor_y = -data.dy;
+    }
 }
 
 void pointing_device_task(void) {
 #ifndef POLLING
-	if ( is_keyboard_master() && integration_mode )
-		handle_pointing_device_modes();
+	// if ( is_keyboard_master() && integration_mode )
+	// 	handle_pointing_device_modes();
 #else
 	get_sensor_data();
 	handle_pointing_device_modes();
@@ -391,10 +430,12 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         case LOWER:
             if (record->event.pressed) {
                 layer_on(_LOWER);
-                track_mode = scroll_mode;
+                track_mode = carret_mode;
+
             } else {
                 layer_off(_LOWER);
                 track_mode = cursor_mode;
+
             }
             return false;
         break;
@@ -402,10 +443,8 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         case RAISE:
             if (record->event.pressed) {
                 layer_on(_RAISE);
-                track_mode = carret_mode;
             } else {
                 layer_off(_RAISE);
-                track_mode = cursor_mode;
             }
             return false;
         break;
@@ -424,64 +463,62 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         case SYMBOL:
             if (record->event.pressed) {
                 layer_on(_SYMBOL);
-                integration_mode = true;
                 symbol_down_timer = timer_read();
                 other_key_pressed = false;
                 symbol_is_down = true;
+                track_mode = scroll_mode;
             } else {
                 layer_off(_SYMBOL);
                 if (timer_elapsed(symbol_down_timer) < 300 && other_key_pressed == false) {
                     tap_code(KC_CAPSLOCK);
                 }
-                integration_mode = false;
                 symbol_is_down = false;
+                track_mode = cursor_mode;
             }
             return false;
         break;
 
-      // handle mouse
-      case KC_BTN1:
-          on_mouse_button(MOUSE_BTN1, record->event.pressed);
-          return false;
+        // handle mouse
+        case KC_BTN1:
+            on_mouse_button(MOUSE_BTN1, record->event.pressed);
+            return false;
 
-      case KC_BTN2:
-          on_mouse_button(MOUSE_BTN2, record->event.pressed);
-          return false;
+        case KC_BTN2:
+            on_mouse_button(MOUSE_BTN2, record->event.pressed);
+            return false;
 
-      case KC_BTN3:
-          on_mouse_button(MOUSE_BTN3, record->event.pressed);
-          return false;
+        case KC_BTN3:
+            on_mouse_button(MOUSE_BTN3, record->event.pressed);
+            return false;
 
-      case KC_BTN4:
-          on_mouse_button(MOUSE_BTN4, record->event.pressed);
-          return false;
+        case KC_BTN4:
+            on_mouse_button(MOUSE_BTN4, record->event.pressed);
+            return false;
 
-      case KC_BTN5:
-          on_mouse_button(MOUSE_BTN5, record->event.pressed);
-          return false;
+        case KC_BTN5:
+            on_mouse_button(MOUSE_BTN5, record->event.pressed);
+            return false;
 
-      case KC_CPI_DOWN:
-          if (cursor_multiplier > CPI_STEP)
-              cursor_multiplier = cursor_multiplier - CPI_STEP;
-          return false;
+        case KC_CPI_DOWN:
+            if (cursor_multiplier > CPI_STEP)
+                cursor_multiplier = cursor_multiplier - CPI_STEP;
+            return false;
 
-      case KC_CPI_STD:
-          cursor_multiplier = 250;
-          return false;
+        case KC_CPI_STD:
+            cursor_multiplier = cursor_multiplier_default;
+            return false;
 
-      case KC_CPI_UP:
-          cursor_multiplier = cursor_multiplier + CPI_STEP;
-          return false;
+        case KC_CPI_UP:
+            cursor_multiplier = cursor_multiplier + CPI_STEP;
+            return false;
 
-      case KC_SMO_SC:
+        case KC_SMO_SC:
         if (record->event.pressed) {
             if (smooth_scroll) {
                 scroll_threshold = scroll_threshold * regular_smoothscroll_factor;
-                scroll_threshold_inte = scroll_threshold_inte * regular_smoothscroll_factor;
                 smooth_scroll = false;
             } else {
                 scroll_threshold = scroll_threshold / regular_smoothscroll_factor;
-                scroll_threshold_inte = scroll_threshold_inte / regular_smoothscroll_factor;
                 smooth_scroll = true;
             }
         }
@@ -516,23 +553,5 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     default:
         return true;
     }
-
-
 }
 
-
-
-// disable tx/rx LEDs
-// void matrix_init_kb(void) {
-//    DDRD &= ~(1<<5);
-//    PORTD &= ~(1<<5);
-
-//    DDRB &= ~(1<<0);
-//    PORTB &= ~(1<<0);
-// }
-
-// debug
-//		char snum[5];
-//		itoa(variable, snum, 10);
-//		SEND_STRING(" ");
-//		send_string(snum);
