@@ -85,6 +85,10 @@ uint16_t cursor_multiplier = cursor_multiplier_default;	// adjust cursor speed
 
 int16_t cur_factor;
 
+void suspend_wakeup_init_user(void) {
+    cursor_multiplier = cursor_multiplier_default;
+}
+
 /***************************
  * Mouse pressed
  **************************/
@@ -143,11 +147,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,       KC_EQL,         ENC_PLAY,   KC_Y,       KC_U,       KC_I,       KC_O,       KC_P,      KC_GRV,
 SYMBOL,     KC_A,       KC_S,       KC_D,       KC_F,       KC_G,       KC_MINS,        MO(_ADJUST),KC_H,       KC_J,       KC_K,       KC_L,       KC_SCLN,   KC_QUOT,
 KC_LSPO,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,                                   KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,   KC_RSPC,
-                        KC_ESC,     KC_LALT,    KC_LGUI,    KC_SPC,     KC_ENT,                                 MO(_NAV),    LALT(KC_3),KC_AT,
+                        KC_ESC,     KC_LALT,    KC_LGUI,    KC_SPC,     KC_ENT,                                 MO(_NAV),   LALT(KC_3), KC_AT,
                                                 KC_LCTL,    LOWER,      RAISE,          KC_DEL,     KC_BSPC
 ),
 
-[_LOWER] = LAYOUT_RHEUMATOID(
+[_RAISE] = LAYOUT_RHEUMATOID(
 KC_TILD,    KC_EXLM,    KC_AT,      KC_HASH,    KC_DLR,     KC_PERC,    _______,        _______,    KC_CIRC,    KC_AMPR,    KC_ASTR,    KC_LPRN,    KC_RPRN,    KC_BSLS,
 _______,    KC_1,       KC_2,       KC_3,       KC_4,       KC_5,       _______,        _______,    KC_6,       KC_7,       KC_8,       KC_9,       KC_0,       LALT(KC_3),
 _______,    _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,    _______,    _______,    _______,
@@ -155,7 +159,7 @@ _______,    _______,    _______,    _______,    _______,    _______,            
                                                 _______,    _______,    _______,        _______,    _______
 ),
 
-[_RAISE] = LAYOUT_RHEUMATOID(
+[_LOWER] = LAYOUT_RHEUMATOID(
 _______,    KC_F1,      KC_F3,      KC_F3,      KC_F4,      KC_F5,      _______,        _______,    KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     _______,
 _______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    _______,    KC_BTN1,    KC_BTN2,    KC_BTN3,    _______,    _______,
 _______,    _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,    _______,    _______,    _______,
@@ -181,8 +185,8 @@ KC_LSFT,    _______,    _______,    _______,    _______,    _______,            
 
 [_ADJUST] = LAYOUT_RHEUMATOID(
 _______,    _______,    _______,    _______,    _______,    KC_CPI_STD, KC_CPI_UP,      _______,    _______,    _______,    _______,    _______,    _______,    _______,
-_______,    _______,    KC_SMO_SC,  _______,    _______,    _______,    KC_CPI_DOWN,    _______,    MACSLEEP,   _______,    _______,    _______,    _______,    _______,
-_______,    _______,    _______,    _______,    _______,    GAMING,                                 _______,    _______,    _______,    _______,    _______,    _______,
+_______,    _______,    KC_SMO_SC,  _______,    _______,    GAMING,     KC_CPI_DOWN,    _______,    MACSLEEP,   _______,    _______,    _______,    _______,    _______,
+_______,    _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,    _______,    _______,    _______,
                         _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
                                                 _______,    _______,    _______,        _______,    _______
 ),
@@ -240,16 +244,10 @@ int max(int num1, int num2) { return (num1 > num2 ) ? num1 : num2; }
 int min(int num1, int num2) { return (num1 > num2 ) ? num2 : num1; }
 
 int8_t sign(int x) { return (x > 0) - (x < 0); }
-int8_t CLAMP_HID(int value) { return value < -127 ? -127 : value > 127 ? 127 : value; }
+int8_t CLAMP_HID(int value) { return constrain(value, -127, 127); }
 
 void tap_code_fast(uint8_t code) {
 	register_code(code);
-	// Dont do this:
-	// if (code == KC_CAPS) {
-	//	 wait_ms(TAP_HOLD_CAPS_DELAY);
-	// } else {
-	//	 wait_ms(TAP_CODE_DELAY);
-	// }
 	unregister_code(code);
 }
 
@@ -294,6 +292,7 @@ void handle_pointing_device_modes(void){
 		cur_factor = cursor_multiplier;
 		mouse_report.x = CLAMP_HID( sensor_x * cur_factor / 100);
 		mouse_report.y = CLAMP_HID(-sensor_y * cur_factor / 100);
+        xprintf("x: %d y: %d\n", mouse_report.x, mouse_report.y);
 	} else {
 		// accumulate movement until threshold reached
 		cum_x += sensor_x;
@@ -304,11 +303,11 @@ void handle_pointing_device_modes(void){
 
 		} else if(track_mode == scroll_mode) {
 				cur_factor = scroll_threshold;
-				if(abs(cum_x) + abs(cum_y) >= cur_factor * 10) {
-					if(abs(cum_x) > abs(cum_y)) {
-						mouse_report.h = sign(cum_x) * (abs(cum_x) + abs(cum_y)) / cur_factor;
+				if(abs(cum_x) + abs(cum_y) >= cur_factor * 6) {
+					if(abs(cum_x) * 0.8 > abs(cum_y)) {
+						mouse_report.h = sign(cum_x) * (abs(cum_x) + abs(cum_y)) / (cur_factor * 4);
 					} else {
-						mouse_report.v = sign(cum_y) * (abs(cum_x) + abs(cum_y)) / cur_factor;
+						mouse_report.v = sign(cum_y) * (abs(cum_x) + abs(cum_y)) / (cur_factor * 4);
 					}
 					cum_x = 0;
 					cum_y = 0;
@@ -329,16 +328,22 @@ void get_sensor_data(void) {
 		return;
 	report_pmw_t data = pmw_read_burst();
 
-    if (data.isMotion) {
-        motion_timer = timer_read();
-        inMotion = true;
-        layer_on(_MOUSE);
-    } else if (inMotion && !data.isMotion && timer_elapsed(motion_timer) > 600) {
-        inMotion = false;
-        reportMotion = false;
-        motion_start = 0;
+    if (track_mode == cursor_mode) {
+        if (data.isMotion) {
+            motion_timer = timer_read();
+            inMotion = true;
+            layer_on(_MOUSE);
+        } else if (inMotion && !data.isMotion && timer_elapsed(motion_timer) > 600) {
+            inMotion = false;
+            reportMotion = false;
+            motion_start = 0;
+            layer_off(_MOUSE);
+        }
+    } else {
+        reportMotion = true;
         layer_off(_MOUSE);
     }
+
 
     // accidental touch handling... WIP
     if (!reportMotion) {
@@ -350,8 +355,9 @@ void get_sensor_data(void) {
     }
 
     if (reportMotion) {
-		sensor_x = -data.dx;
-		sensor_y = -data.dy;
+        float scale = constrain(timer_elapsed(motion_start) / 1000.0, 0.2, 1);
+		sensor_x = -data.dx * scale;
+		sensor_y = -data.dy * scale;
     }
 }
 
@@ -443,8 +449,10 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         case RAISE:
             if (record->event.pressed) {
                 layer_on(_RAISE);
+                track_mode = scroll_mode;
             } else {
                 layer_off(_RAISE);
+                track_mode = cursor_mode;
             }
             return false;
         break;

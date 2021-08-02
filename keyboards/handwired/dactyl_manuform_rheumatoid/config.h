@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID 0xFEED
-#define PRODUCT_ID 0x3060
+#define PRODUCT_ID 0x3666
 #define DEVICE_VER 0x0001
 #define MANUFACTURER   pixelbreaker
 #define PRODUCT Rheumatoid
@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define SS_PIN F7
 #define PMW_CPI 600
-#define ROTATIONAL_TRANSFORM_ANGLE -0x30
+#define ROTATIONAL_TRANSFORM_ANGLE -30
 
 /*
  * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
