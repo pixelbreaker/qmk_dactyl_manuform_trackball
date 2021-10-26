@@ -34,11 +34,15 @@ bool _inBurst = false;
 #    define ROTATIONAL_TRANSFORM_ANGLE 0x00
 #endif
 
+#ifndef PMW_SS_PIN
+#   define PMW_SS_PIN SPI_SS_PIN
+#endif
+
 void print_byte(uint8_t byte) { dprintf("%c%c%c%c%c%c%c%c|", (byte & 0x80 ? '1' : '0'), (byte & 0x40 ? '1' : '0'), (byte & 0x20 ? '1' : '0'), (byte & 0x10 ? '1' : '0'), (byte & 0x08 ? '1' : '0'), (byte & 0x04 ? '1' : '0'), (byte & 0x02 ? '1' : '0'), (byte & 0x01 ? '1' : '0')); }
 
 
 bool spi_start_adv(void) {
-    bool status = spi_start(F7, false, 3, SPI_DIVISOR);
+    bool status = spi_start(PMW_SS_PIN, false, 3, SPI_DIVISOR);
     wait_us(1);
     return status;
 }
@@ -132,7 +136,7 @@ bool pmw_spi_init(void) {
 void pmw_upload_firmware(void) {
     spi_write_adv(REG_Config2, 0x00);
 
-    spi_write_adv(REG_Angle_Tune, constrain(ROTATIONAL_TRANSFORM_ANGLE, -30, 30));
+    spi_write_adv(REG_Angle_Tune, constrain(ROTATIONAL_TRANSFORM_ANGLE, -50, 50));
 
     spi_write_adv(REG_SROM_Enable, 0x1d);
 

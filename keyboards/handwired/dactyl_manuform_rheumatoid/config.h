@@ -32,13 +32,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_COLS 7
 
 // encoders
-#define ENCODERS_PAD_A { F5 }
-#define ENCODERS_PAD_B { F6 }
+#define ENCODERS_PAD_A { F6 }
+#define ENCODERS_PAD_B { F5 }
 #define ENCODER_RESOLUTION 4
-#define ENCODER_DIRECTION_FLIP
 
 // Is this the right (master side)?
-
 #define IS_RIGHT
 #define MASTER_RIGHT
 
@@ -48,19 +46,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #else // right
     #define MATRIX_ROW_PINS { B7, D5, C7, F1 }
     #define MATRIX_COL_PINS { B5, B4, E6, D7, C6, D4, D1 }
-
-    #define LED_CAPS_LOCK_PIN D2
-    #define LED_PIN_ON_STATE 1
 #endif
 
 #define DIODE_DIRECTION COL2ROW
 
 #define USB_POLLING_INTERVAL_MS 1
-// #define USB_MAX_POWER_CONSUMPTION 100
+#define USB_MAX_POWER_CONSUMPTION 500
 
-#define SS_PIN F7
-#define PMW_CPI 600
-#define ROTATIONAL_TRANSFORM_ANGLE -30
+#define PMW_SS_PIN F7
+#define PMW_CPI 550
+#define ROTATIONAL_TRANSFORM_ANGLE -40
+
+#define AUTO_MOUSEBUTTONS true
 
 /*
  * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
@@ -71,8 +68,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define EE_HANDS
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
-#define DEBOUNCE 5
+#define DEBOUNCE 0
 
-#define TAPPING_TERM 200
-#define POLLING true
+// save some flash space
+#define NO_ACTION_ONESHOT
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
+// #define NO_ACTION_TAPPING
+
+
 
