@@ -88,7 +88,7 @@ uint16_t carret_threshold_inte = 340;  // in integration mode higher threshold
 
 uint8_t scroll_threshold = 6;  // divide if started smooth
 
-#define cursor_multiplier_default 120;
+#define cursor_multiplier_default 130;
 uint16_t cursor_multiplier = cursor_multiplier_default;  // adjust cursor speed
 #define CPI_STEP 20
 
@@ -164,6 +164,14 @@ _______,    _______,    _______,    _______,    _______,    _______,            
 						_______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
 											    _______,    _______,    _______,        _______,    _______
 ),
+
+// [_MOUSE] = LAYOUT_RHEUMATOID(
+// _______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    _______,    _______,    _______,    _______,    _______,    _______,
+// _______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    _______,    KC_BTN1,    KC_BTN2,    KC_BTN3,    _______,    _______,
+// _______,    _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,    _______,    _______,    _______,
+// 						_______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
+// 											    _______,    _______,    _______,        _______,    _______
+// ),
 
 [_NAV] = LAYOUT_RHEUMATOID(
 _______,    _______,    _______,    _______,    MAC_SCRNSHT,MAC_SCRNRCD,_______,        _______,    _______,    LINE_DOWN,  LINE_UP,    _______,    _______,    _______,
@@ -283,9 +291,9 @@ void handle_pointing_device_modes(void) {
 
     if (track_mode == cursor_mode) {
         cur_factor = cursor_multiplier;
-        if (!mouse_is_down && (get_mods() & (MOD_BIT(KC_LSFT)))) {
-            cur_factor *= 2;
-        }
+        // if (!mouse_is_down && (get_mods() & (MOD_BIT(KC_LSFT)))) {
+        //     cur_factor *= 2;
+        // }
         mouse_report.x = !m_lock_y ? clamp_hid(sensor_x * cur_factor / 100) : 0;
         mouse_report.y = !m_lock_x ? clamp_hid(-sensor_y * cur_factor / 100) : 0;
         // xprintf("x: %d y: %d\n", mouse_report.x, mouse_report.y);
@@ -303,7 +311,7 @@ void handle_pointing_device_modes(void) {
 
         } else if (track_mode == scroll_mode) {
             cur_factor                = scroll_threshold;
-            uint8_t factor_multiplier = 7;
+            uint8_t factor_multiplier = 9;
             if (abs(cum_x) + abs(cum_y) >= cur_factor * factor_multiplier) {
                 if (abs(cum_x) * 0.4 > abs(cum_y)) {
                     mouse_report.h = ceil(sign(cum_x) * (abs(cum_x) + abs(cum_y)) / (cur_factor * factor_multiplier));
@@ -339,15 +347,15 @@ void get_sensor_data(void) {
             // clang-format off
             if (
                 (
-                    timer_elapsed(last_key_press) > 600 &&
-                    timer_elapsed(start_motion_timer) > 50 &&
-                    timer_elapsed(last_rthumb_press) > 400
+                    timer_elapsed(last_key_press) > 500 &&
+                    timer_elapsed(start_motion_timer) > 30 &&
+                    timer_elapsed(last_rthumb_press) > 200
                 ) || mods_active
             ) {
                 // clang-format on
                 layer_on(_MOUSE);
                 last_key_press = 0;
-            } else if (abs(data.dx - olddx) + abs(data.dy - olddy) > 1.5) {
+            } else if (abs(data.dx - olddx) + abs(data.dy - olddy) > 1) {
                 layer_on(_MOUSE);
                 last_key_press = 0;
             } else {
@@ -357,9 +365,9 @@ void get_sensor_data(void) {
                     // if pointer has moved significantly, then enable the mouse buttons
                     if (sensor_diff > 1) {
                         layer_on(_MOUSE);
-                    } else {
-                        layer_off(_MOUSE);
-                    }
+                    } //else {
+                        // layer_off(_MOUSE);
+                    // }
                 }
             }
 
@@ -537,7 +545,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                 track_mode        = scroll_mode;
             } else {
                 layer_off(_SYMBOL);
-                if (timer_elapsed(symbol_up_timer) < 300 && other_key_pressed == false) {
+                if (timer_elapsed(symbol_up_timer) > 50 && timer_elapsed(symbol_up_timer) < 250 && other_key_pressed == false) {
                     tap_code(KC_CAPSLOCK);
                 }
                 symbol_is_down  = false;
