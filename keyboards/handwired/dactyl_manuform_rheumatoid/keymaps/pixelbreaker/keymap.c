@@ -39,6 +39,7 @@ enum custom_keycodes {
     LOWER,
     SYMBOL,
     GAMING,
+    NAV,
     MACSLEEP,
     ENC_PLAY,
     MLOC_X,
@@ -104,38 +105,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 KC_TAB,     KC_Q,       KC_W,       KC_E,       KC_R,       KC_T,       KC_EQL,         ENC_PLAY,   KC_Y,       KC_U,       KC_I,       KC_O,       KC_P,      KC_GRV,
 SYMBOL,     KC_A,       KC_S,       KC_D,       KC_F,       KC_G,       KC_MINS,        MO(_ADJUST),KC_H,       KC_J,       KC_K,       KC_L,       KC_SCLN,   KC_QUOT,
 KC_LSPO,    KC_Z,       KC_X,       KC_C,       KC_V,       KC_B,                                   KC_N,       KC_M,       KC_COMM,    KC_DOT,     KC_SLSH,   KC_RSPC,
-						KC_ESC,     KC_LALT,    KC_LGUI,    KC_SPC,     KC_ENT,                                 MO(_NAV),   LALT(KC_3), KC_AT,
+						KC_ESC,     KC_LALT,    KC_LGUI,    KC_SPC,     KC_ENT,                                 NAV,        A(KC_3),    KC_AT,
 											    KC_LCTL,    LOWER,      RAISE,          KC_BSPC,    KC_DEL
 ),
 
 [_RAISE] = LAYOUT_RHEUMATOID(
-KC_TILD,    KC_EXLM,    KC_AT,      KC_HASH,    KC_DLR,     KC_PERC,    _______,        _______,    KC_6,       KC_7,       KC_8,       KC_9,       KC_0,       KC_BSLS,
-_______,    KC_1,       KC_2,       KC_3,       KC_4,       KC_5,       KC_6,           _______,    _______,    KC_4,       KC_5,       KC_6,       _______,    LALT(KC_3),
+KC_TILD,    KC_EXLM,    KC_AT,      KC_HASH,    KC_DLR,     KC_PERC,    MLOC_X,         _______,    KC_6,       KC_7,       KC_8,       KC_9,       KC_0,       KC_BSLS,
+_______,    KC_1,       KC_2,       KC_3,       KC_4,       KC_5,       MLOC_Y,         _______,    _______,    KC_4,       KC_5,       KC_6,       _______,    LALT(KC_3),
 _______,    _______,    _______,    _______,    _______,    _______,                                _______,    KC_1,       KC_2,       KC_3,       _______,    _______,
                         _______,    _______,    _______,    _______,    _______,                                _______,    KC_0,       KC_DOT,
                                                 _______,    _______,    _______,        _______,    _______
 ),
 
-// Old number layout
-// [_RAISE] = LAYOUT_RHEUMATOID(
-// KC_TILD,    KC_EXLM,    KC_AT,      KC_HASH,    KC_DLR,     KC_PERC,    _______,        _______,    KC_CIRC,    KC_AMPR,    KC_ASTR,    KC_LPRN,    KC_RPRN,    KC_BSLS,
-// _______,    KC_1,       KC_2,       KC_3,       KC_4,       KC_5,       _______,        _______,    KC_6,       KC_7,       KC_8,       KC_9,       KC_0,       LALT(KC_3),
-// _______,    _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,    _______,    _______,    _______,
-//                         _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
-//                                                 _______,    _______,    _______,        _______,    _______
-// ),
-
 [_LOWER] = LAYOUT_RHEUMATOID(
-_______,    KC_F1,      KC_F2,      KC_F3,      KC_F4,      KC_F5,       KC_F6,            _______,    KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     _______,
-_______,    LGUI(KC_1), LGUI(KC_2), LGUI(KC_3), LGUI(KC_4), LGUI(KC_5), LGUI(KC_6),        _______,    _______,    KC_BTN1,    KC_BTN2,    KC_BTN3,    _______,    _______,
-_______,    _______,    _______,    _______,    _______,    _______,                                   _______,    _______,    _______,    _______,    _______,    _______,
-                        _______,    _______,    _______,    _______,    _______,                                   _______,    _______,    _______,
-                                                _______,    _______,    _______,           _______,    _______
+_______,    KC_F1,      KC_F2,      KC_F3,      KC_F4,      KC_F5,       KC_F6,         _______,    KC_F6,      KC_F7,      KC_F8,      KC_F9,      KC_F10,     _______,
+_______,    G(KC_1),    G(KC_2),    G(KC_3),    G(KC_4),    G(KC_5),     G(KC_6),       _______,    A(KC_F6),   A(KC_F7),   A(KC_F8),   A(KC_F9),   A(KC_F10),  _______,
+_______,    _______,    _______,    _______,    _______,    _______,                                C(A(KC_F6)),C(A(KC_F7)),C(A(KC_F8)),C(A(KC_F9)),C(A(KC_F10)),_______,
+                        _______,    _______,    _______,    _______,    _______,                                _______,    _______,    _______,
+                                                _______,    _______,    _______,        _______,    _______
 ),
 
 [_SYMBOL] = LAYOUT_RHEUMATOID(
-_______,    _______,    _______,    _______,    _______,    _______,    MLOC_X,         _______,    KC_EXLM,    KC_LBRC,    KC_RBRC,    KC_DLR,     KC_PERC,    KC_F12,
-_______,    _______,    _______,    _______,    _______,    _______,    MLOC_Y,         KC_UNDS,    KC_PIPE,    KC_LCBR,    KC_RCBR,    KC_EQL,     KC_COLN,    KC_DQUO,
+_______,    _______,    _______,    _______,    _______,    _______,    _______,        _______,    KC_EXLM,    KC_LBRC,    KC_RBRC,    KC_DLR,     KC_PERC,    KC_F12,
+_______,    _______,    _______,    _______,    _______,    _______,    _______,        KC_UNDS,    KC_PIPE,    KC_LCBR,    KC_RCBR,    KC_EQL,     KC_COLN,    KC_DQUO,
 _______,    _______,    _______,    _______,    _______,    _______,                                KC_AMPR,    KC_LT,      KC_GT,      KC_MINS,    KC_BSLS,    _______,
 						_______,    _______,    _______,    _______,    _______,                                _______,    KC_ASTR,    _______,
 												_______,    _______,    _______,        SORT_LINES, DEL_LINE
@@ -308,7 +300,6 @@ void handle_pointing_device_modes(void) {
         } else if (track_mode == misc_mode) {
             cur_factor = carret_threshold;
             tap_tb(_______, _______, KC_VOLU, KC_VOLD);
-
         } else if (track_mode == scroll_mode) {
             cur_factor                = scroll_threshold;
             uint8_t factor_multiplier = 9;
@@ -348,8 +339,8 @@ void get_sensor_data(void) {
             if (
                 (
                     timer_elapsed(last_key_press) > 500 &&
-                    timer_elapsed(start_motion_timer) > 30 &&
-                    timer_elapsed(last_rthumb_press) > 200
+                    timer_elapsed(start_motion_timer) > 50 &&
+                    timer_elapsed(last_rthumb_press) > 250
                 ) || mods_active
             ) {
                 // clang-format on
@@ -365,8 +356,8 @@ void get_sensor_data(void) {
                     // if pointer has moved significantly, then enable the mouse buttons
                     if (sensor_diff > 1) {
                         layer_on(_MOUSE);
-                    } //else {
-                        // layer_off(_MOUSE);
+                    }  // else {
+                       //  layer_off(_MOUSE);
                     // }
                 }
             }
@@ -384,7 +375,7 @@ void get_sensor_data(void) {
             }
             if (timer_elapsed(last_key_press) < 800) {
                 layer_off(_MOUSE);
-            } else if (timer_elapsed(last_mouse_press) < 800) {
+            } else if (timer_elapsed(last_mouse_press) < 600) {
                 layer_on(_MOUSE);
             }
         }
@@ -415,7 +406,9 @@ void get_sensor_data(void) {
 
     if (report_motion) {
         float scale = constrain(timer_elapsed(start_motion_timer) / 1300.0, 0.8, 1.2);
-
+        if ((get_mods() & MOD_BIT(KC_LSFT)) == MOD_BIT(KC_LSFT)) {
+            scale *= 2;
+        }
         sensor_x = -data.dx * scale;
         sensor_y = -data.dy * scale;
     } else {
@@ -481,7 +474,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     }
 
     mods_active = !(get_mods() & (MOD_MASK_GUI | MOD_MASK_SHIFT | MOD_MASK_ALT | MOD_MASK_CTRL));
-    gui_active  = !(get_mods() & (MOD_MASK_GUI));
+    gui_active  = (get_mods() & MOD_BIT(KC_LGUI)) == MOD_BIT(KC_LGUI);
 
     if (record->event.pressed) {
         if (keycode != SYMBOL && symbol_is_down) {
@@ -577,6 +570,17 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
         case KC_CPI_UP:
             cursor_multiplier = cursor_multiplier + CPI_STEP;
+            return false;
+
+        // reset mouse mode with a tap of the key next to the trackball
+        case NAV:
+            if (record->event.pressed) {
+                mouse_is_down = false;
+                layer_off(_MOUSE);
+                layer_on(_NAV);
+            } else {
+                layer_off(_NAV);
+            }
             return false;
 
         case MACSLEEP:
